@@ -1,0 +1,10 @@
+.main-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.main-club-notice {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}

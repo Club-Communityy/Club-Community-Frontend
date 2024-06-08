@@ -1,0 +1,12 @@
+.contents {
+	margin: 0 auto;
+	padding: 25px 0;
+	max-width: 1000px;
+	border: 1px solid black;
+}
+
+.main-title {
+	font-size: 20px;
+	font-weight: bold;
+	margin-left: 20px;
+}

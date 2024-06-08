@@ -1,0 +1,51 @@
+.auth-form-container {
+	height: 78vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.auth-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 25px 50px;
+	border: 1px solid #A0A0A0;
+	width: 350px;
+	min-height: 150px;
+	border-radius: 25px;
+}
+
+.auth-form-title {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.auth-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+	width: 100%;
+	border-radius: 15px;
+	background-color: #3F72AF;
+	font-size: 1rem;
+	margin-top: 0.9rem;
+	color: #ffffff;
+	border: none;
+
+	&:hover {
+		cursor: pointer;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+}
+
+.kakao-button {
+	width: 100%;
+}
+
+.kakao-button img {
+	width: 350px;
+	margin-top: 10px;
+}

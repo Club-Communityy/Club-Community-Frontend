@@ -1,0 +1,13 @@
+.activity-videos {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.activity-video {
+	width: 300px;
+	margin: 0 10px 20px;
+	text-align: center;
+}
