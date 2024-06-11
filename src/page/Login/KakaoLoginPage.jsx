@@ -35,6 +35,7 @@ const KakaoLoginPage = () => {
 	}
 
 	const handleKaKaoSignUp = async () => {
+		console.log('signUpForm:', signUpForm);
 		try {
 			const response = await axios.post(
 				'http://localhost:8080/api/auth/kakao-register', signUpForm,
@@ -54,7 +55,7 @@ const KakaoLoginPage = () => {
 
 	const handleKakaoLogin = async () => {
 		try {
-			const response = await axios.post(`http://localhost:8080/api/auth/kakao-login?code=${code}`, {
+			const response = await axios.post(`http://localhost:8080/api/auth/kakao-login?code=${code}`, {}, {
 				headers: {
 					'Content-Type': 'application/json',
 				},
