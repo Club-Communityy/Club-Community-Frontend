@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/AuthForm.css';
 import TextField from '@mui/material/TextField';
 import { KAKAO_AUTH_URL } from './../../OAuth';
+import { AppContext } from "../../utils/loginContext";
+import axios from 'axios';
 
 const LoginPage = () => {
 
+	const { login } = useContext(AppContext);
 	const navigate = useNavigate();
 
 	const [loginForm, setLoginForm] = useState({
-		id: '',
+		loginId: '',
 		password: '',
 	});
 
-	const { id, password } = loginForm;
+	const { loginId, password } = loginForm;
 
 	const onChange = (e) => {
 		const userLoginForm = {
@@ -23,26 +26,20 @@ const LoginPage = () => {
 		setLoginForm(userLoginForm);
 	}
 
-	// const handleLogin = async () => {
-	// 	setIsLoginAttempted(true);
+	const handleLogin = async () => {
 
-	// 	try {
-	// 		const response = await defaultBackInstance.post(BACKEND_SERVER_URL + '/usermanagement/login', {
-	// 			accountId: account_id,
-	// 			password: password
-	// 		});
+		try {
+			const response = await axios.post('http://localhost:8080/api/auth/login', loginForm);
 
-	// 		const responseData = response.data;
+			localStorage.setItem('token', response.data.token);
 
-	// 		localStorage.setItem('accessToken', responseData.accessToken);
-	// 		localStorage.setItem('refreshToken', responseData.refreshToken);
-	// 		login();
-	// 		navigate(-1);
-	// 	} catch (error) {
-	// 		alert('아이디나 비밀번호가 잘못되었습니다. 다시 시도해주세요.')
-	// 		console.log(error);
-	// 	}
-	// }
+			login();
+			navigate('/');
+		} catch (error) {
+			alert('아이디나 비밀번호가 잘못되었습니다. 다시 시도해주세요.')
+			console.log(error);
+		}
+	}
 
 	const handleKakaoLogin = () => {
 		window.location.href = KAKAO_AUTH_URL;
@@ -54,8 +51,8 @@ const LoginPage = () => {
 				<TextField
 					id="standard-basic"
 					label="아이디"
-					name='id'
-					value={id}
+					name='loginId'
+					value={loginId}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
@@ -70,7 +67,7 @@ const LoginPage = () => {
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
 				/>
-				<div className="auth-button">
+				<div className="auth-button" onClick={handleLogin}>
 					로그인
 				</div>
 				<div className="kakao-button" onClick={handleKakaoLogin}>

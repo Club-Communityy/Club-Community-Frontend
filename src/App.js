@@ -6,8 +6,10 @@ import SignUpPage from './page/SignUp/SignUpPage';
 import LoginPage from './page/Login/LoginPage';
 import ClubRegistPage from './page/Club/ClubRegistPage';
 import ClubRegistListPage from './page/Club/ClubRegistListPage';
-import KakaoRedirect from './page/Login/KakaoRedirect';
+import KakaoSignUpPage from './page/SignUp/KakaoSignUpPage';
 import ClubNoticeRegistPage from './page/Club/ClubNoticeRegistPage';
+import ClubRequestStatusPage from './page/Club/ClubRequestStatusPage';
+import KakaoLoginPage from './page/Login/KakaoLoginPage';
 
 function App() {
   return (
@@ -17,13 +19,21 @@ function App() {
         <div className='contents'>
           <Routes>
             <Route path='/' element={<MainPage />} />
-            <Route path='sign-up' element={<SignUpPage />} />
-            <Route path='login' element={<LoginPage />} />
-            <Route path='/oauth' element={<KakaoRedirect />} />
+            <Route path='/signUp' element={<SignUpPage />} />
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/api/auth/kakao-code' element={<KakaoLoginPage />} />
+            <Route path='/kakao-signup' element={<KakaoSignUpPage />} />
 
-            <Route path='club-regist' element={<ClubRegistPage />} />
-            <Route path='club-regist-list' element={<ClubRegistListPage />} />
-            <Route path='club-notice-regist' element={<ClubNoticeRegistPage />} />
+            {/* 동아리 등록 페이지 */}
+            <Route path='/club/regist' element={<ClubRegistPage />} />
+            {/* 동아리 신청 현황 페이지 */}
+            <Route path='/club/request/status' element={<ClubRequestStatusPage />} />
+
+            {/* 동아리 신청 현황 관리자용 페이지 */}
+            <Route path='/club/regist/list' element={<ClubRegistListPage />} />
+
+            {/* 마스터 회원의 동아리 공지 페이지 */}
+            <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
           </Routes>
         </div>
       </Router>

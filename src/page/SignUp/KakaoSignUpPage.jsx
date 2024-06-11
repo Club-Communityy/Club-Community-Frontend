@@ -6,24 +6,23 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { KAKAO_AUTH_URL } from '../../OAuth';
-const SignUpPage = () => {
+
+const KakaoSignUpPage = () => {
 
 	const navigate = useNavigate();
+	const code = new URL(window.location.href).searchParams.get('code');
 
 	const [signUpForm, setSignUpForm] = useState({
-		loginId: '',
-		password: '',
 		username: '',
 		birth: '',
 		gender: '',
 		department: '',
 		studentId: '',
 		phoneNumber: '',
-		email: '',
 		userType: 'ROLE_USER',
+		code: code,
 	});
-	const { loginId, password, username, birth, gender, department, studentId, phoneNumber, email, userType } = signUpForm;
+	const { username, birth, gender, department, studentId, phoneNumber } = signUpForm;
 
 	const onChange = (e) => {
 		const userSignUpForm = {
@@ -34,66 +33,40 @@ const SignUpPage = () => {
 	}
 
 	const handleSignUp = async () => {
+		console.log(signUpForm);
 		try {
-			const response = await axios.post('http://localhost:8080/api/auth/register', signUpForm, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-			alert('회원가입을 축하합니다!');
+			const response = await axios.post('http://localhost:8080/api/auth/kakao-register', signUpForm);
+
+			localStorage.setItem('token', response.data.token);
 			navigate('/');
 		} catch (error) {
-			alert(error.response.data.message);
+			console.log(error);
 		}
 	};
 
-	const handleKakaoLogin = () => {
-		window.location.href = KAKAO_AUTH_URL;
-	}
 
 	return (
 		<div className='auth-form-container'>
 			<div className="auth-form">
-				<div className='auth-form-title'>회원가입</div>
+				<div className='auth-form-title'>카카오 회원가입</div>
 				<TextField
 					id="standard-basic"
-					label="아이디"
-					name='loginId'
-					value={loginId}
+					label="이름"
+					name='username'
+					value={username}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
 				/>
 				<TextField
 					id="standard-basic"
-					label="비밀번호"
-					type="password"
-					name='password'
-					value={password}
+					label="생년월일(19990101)"
+					name='birth'
+					value={birth}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
 				/>
-				<div style={{ display: 'flex' }}>
-					<TextField
-						id="standard-basic"
-						label="이름"
-						name='username'
-						value={username}
-						onChange={onChange}
-						variant="standard"
-						sx={{ minWidth: '30%', marginTop: '10px', marginRight: '5px' }}
-					/>
-					<TextField
-						id="standard-basic"
-						label="생년월일(19990101)"
-						name='birth'
-						value={birth}
-						onChange={onChange}
-						variant="standard"
-						sx={{ minWidth: '30%', marginTop: '10px' }}
-					/>
-				</div>
 				<FormControl variant="standard" sx={{ m: 1, minWidth: '100%' }}>
 					<InputLabel id="demo-simple-select-standard-label">성별</InputLabel>
 					<Select
@@ -135,24 +108,12 @@ const SignUpPage = () => {
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
 				/>
-				<TextField
-					id="standard-basic"
-					label="이메일"
-					name='email'
-					value={email}
-					onChange={onChange}
-					variant="standard"
-					sx={{ minWidth: '100%', marginTop: '10px' }}
-				/>
 				<div className="auth-button" onClick={handleSignUp}>
 					회원가입
-				</div>
-				<div className="kakao-button" onClick={handleKakaoLogin}>
-					<div>카카오로 가입하기</div>
 				</div>
 			</div>
 		</div>
 	);
 };
 
-export default SignUpPage;
+export default KakaoSignUpPage;
