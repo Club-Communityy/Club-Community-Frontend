@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import { AppContext } from "../../utils/loginContext";
 import axios from 'axios';
 
 const KakaoLoginPage = () => {
 
+	const { login } = useContext(AppContext);
 	const navigate = useNavigate();
 	const code = new URL(window.location.href).searchParams.get('code');
 
@@ -35,7 +37,14 @@ const KakaoLoginPage = () => {
 	const handleSignUp = async () => {
 		console.log(signUpForm);
 		try {
-			const response = await axios.post('http://localhost:8080/api/auth/kakao-register', signUpForm);
+			const response = await axios.post(
+				'http://localhost:8080/api/auth/kakao-register', signUpForm,
+				{
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
 
 			localStorage.setItem('token', response.data.token);
 			navigate('/');
@@ -43,7 +52,6 @@ const KakaoLoginPage = () => {
 			console.log(error);
 		}
 	};
-
 	const handleKakaoLogin = async () => {
 		try {
 			const response = await axios.post(`http://localhost:8080/api/auth/kakao-login?code=${code}`, {
@@ -51,8 +59,10 @@ const KakaoLoginPage = () => {
 					'Content-Type': 'application/json',
 				},
 			});
-			localStorage.setItem('token', response.data.token);
-			navigate('/');
+			// localStorage.setItem('token', response.data.token);
+
+			// login();
+			// navigate('/');
 		} catch (error) {
 			console.log(error);
 			if (error.response && error.response.status === 404) {

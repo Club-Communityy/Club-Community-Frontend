@@ -10,6 +10,7 @@ import KakaoSignUpPage from './page/SignUp/KakaoSignUpPage';
 import ClubNoticeRegistPage from './page/Club/ClubNoticeRegistPage';
 import ClubRequestStatusPage from './page/Club/ClubRequestStatusPage';
 import KakaoLoginPage from './page/Login/KakaoLoginPage';
+import AdminClubApprovalPage from './page/Admin/AdminClubApprovalPage'
 
 function App() {
   return (
@@ -34,6 +35,9 @@ function App() {
 
             {/* 마스터 회원의 동아리 공지 페이지 */}
             <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
+
+            {/* 마스터 관리자의 승인/거절 페이지 */}
+            <Route path='/admin/club/approval' element={<AdminClubApprovalPage />} />
           </Routes>
         </div>
       </Router>

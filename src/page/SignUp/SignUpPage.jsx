@@ -147,9 +147,6 @@ const SignUpPage = () => {
 				<div className="auth-button" onClick={handleSignUp}>
 					회원가입
 				</div>
-				<div className="kakao-button" onClick={handleKakaoLogin}>
-					<div>카카오로 가입하기</div>
-				</div>
 			</div>
 		</div>
 	);

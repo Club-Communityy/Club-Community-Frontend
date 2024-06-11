@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
+
 const ClubRegistPage = () => {
 
+	const navigate = useNavigate();
+	const token = localStorage.getItem('token');
+
 	const [clubRegistForm, setClubRegistForm] = useState({
-		clubType: '', clubName: '',
-		userName: '', userDepartment: '', userStudentId: '', userPhone: '',
-		professorName: '', professorDepartment: '', professorPhone: '',
+		type: '', name: '', advisorName: '', advisorMajor: '', advisorContact: '',
 	});
 
-	const { clubType, clubName, userName, userDepartment, userStudentId, userPhone,
-		professorName, professorDepartment, professorPhone } = clubRegistForm;
+	const { type, name, advisorName, advisorMajor, advisorContact } = clubRegistForm;
+
+	const [myInfoForm, setMyInfoForm] = useState({
+		username: '', department: '', studentId: '', phoneNumber: '',
+
+	});
+
+	const { username, department, studentId, phoneNumber } = myInfoForm;
 
 	const onChange = (e) => {
 		const userClubRegistForm = {
@@ -23,9 +33,46 @@ const ClubRegistPage = () => {
 		setClubRegistForm(userClubRegistForm);
 	}
 
-	const handleClubRegist = () => {
-		console.log(clubRegistForm);
-	}
+	const handleClubRegist = async () => {
+		try {
+			await axios.post('http://localhost:8080/api/clubs/apply', clubRegistForm, {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			})
+
+			alert('동아리 등록 신청이 완료되었습니다!');
+			navigate('/club/request/status');
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+
+	const handleGetMyInfo = async () => {
+		try {
+			const response = await axios.get('http://localhost:8080/api/auth/me', {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			})
+			const userInfo = response.data;
+
+			setMyInfoForm(prevState => ({
+				...prevState,
+				username: userInfo.username,
+				department: userInfo.department,
+				studentId: userInfo.studentId,
+				phoneNumber: userInfo.phoneNumber,
+			}))
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	useEffect(() => {
+		handleGetMyInfo();
+	}, []);
 
 	return (
 		<div className='auth-form-container'>
@@ -36,20 +83,20 @@ const ClubRegistPage = () => {
 					<Select
 						labelId="demo-simple-select-standard-label"
 						id="demo-simple-select-standard"
-						name='clubType'
-						value={clubType}
+						name='type'
+						value={type}
 						onChange={onChange}
 						label="동아리 종류"
 					>
-						<MenuItem value={'중앙'}>중앙</MenuItem>
-						<MenuItem value={'학과'}>학과</MenuItem>
+						<MenuItem value={'CENTRAL'}>중앙</MenuItem>
+						<MenuItem value={'DEPARTMENT'}>학과</MenuItem>
 					</Select>
 				</FormControl>
 				<TextField
 					id="standard-basic"
 					label="동아리 이름"
-					name='clubName'
-					value={clubName}
+					name='name'
+					value={name}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%' }}
@@ -57,44 +104,48 @@ const ClubRegistPage = () => {
 				<TextField
 					id="standard-basic"
 					label="신청자 이름"
-					name='userName'
-					value={userName}
+					name='username'
+					value={username}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
+					disabled
 				/>
 				<TextField
 					id="standard-basic"
 					label="신청자 소속"
-					name='userDepartment'
-					value={userDepartment}
+					name='department'
+					value={department}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
+					disabled
 				/>
 				<TextField
 					id="standard-basic"
 					label="신청자 학번"
 					name='userStudentId'
-					value={userStudentId}
+					value={studentId}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
+					disabled
 				/>
 				<TextField
 					id="standard-basic"
 					label="신청자 연락처"
 					name='userPhone'
-					value={userPhone}
+					value={phoneNumber}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
+					disabled
 				/>
 				<TextField
 					id="standard-basic"
 					label="지도교수 이름"
-					name='professorName'
-					value={professorName}
+					name='advisorName'
+					value={advisorName}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
@@ -102,8 +153,8 @@ const ClubRegistPage = () => {
 				<TextField
 					id="standard-basic"
 					label="지도교수 전공"
-					name='professorDepartment'
-					value={professorDepartment}
+					name='advisorMajor'
+					value={advisorMajor}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
@@ -111,8 +162,8 @@ const ClubRegistPage = () => {
 				<TextField
 					id="standard-basic"
 					label="지도교수 연락처"
-					name='professorPhone'
-					value={professorPhone}
+					name='advisorContact'
+					value={advisorContact}
 					onChange={onChange}
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
