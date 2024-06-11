@@ -89,7 +89,7 @@ const ClubRegistPage = () => {
 						label="동아리 종류"
 					>
 						<MenuItem value={'CENTRAL'}>중앙</MenuItem>
-						<MenuItem value={'DEPARTMENT'}>학과</MenuItem>
+						<MenuItem value={'DEPARTMENTAL'}>학과</MenuItem>
 					</Select>
 				</FormControl>
 				<TextField

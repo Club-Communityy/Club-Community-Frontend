@@ -31,6 +31,7 @@ const Header = () => {
 						<div className='header-nav'>
 							<div onClick={() => { navigate('/club/regist'); }}>동아리등록</div>
 							<div onClick={() => { navigate('/club/request/status'); }}>신청현황</div>
+							<div onClick={() => { navigate('/club/details'); }}>동아리관리</div>
 							<div onClick={handleLogout}>로그아웃</div>
 						</div>
 					) : (
