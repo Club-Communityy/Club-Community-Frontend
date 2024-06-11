@@ -34,8 +34,7 @@ const KakaoLoginPage = () => {
 		setSignUpForm(userSignUpForm);
 	}
 
-	const handleSignUp = async () => {
-		console.log(signUpForm);
+	const handleKaKaoSignUp = async () => {
 		try {
 			const response = await axios.post(
 				'http://localhost:8080/api/auth/kakao-register', signUpForm,
@@ -52,6 +51,7 @@ const KakaoLoginPage = () => {
 			console.log(error);
 		}
 	};
+
 	const handleKakaoLogin = async () => {
 		try {
 			const response = await axios.post(`http://localhost:8080/api/auth/kakao-login?code=${code}`, {
@@ -59,10 +59,10 @@ const KakaoLoginPage = () => {
 					'Content-Type': 'application/json',
 				},
 			});
-			// localStorage.setItem('token', response.data.token);
+			localStorage.setItem('token', response.data.token);
 
-			// login();
-			// navigate('/');
+			login();
+			navigate('/');
 		} catch (error) {
 			console.log(error);
 			if (error.response && error.response.status === 404) {
@@ -72,7 +72,6 @@ const KakaoLoginPage = () => {
 			}
 		}
 	};
-
 
 	useEffect(() => {
 		handleKakaoLogin();
@@ -141,7 +140,7 @@ const KakaoLoginPage = () => {
 					variant="standard"
 					sx={{ minWidth: '100%', marginTop: '10px' }}
 				/>
-				<div className="auth-button" onClick={handleSignUp}>
+				<div className="auth-button" onClick={handleKaKaoSignUp}>
 					회원가입
 				</div>
 			</div>

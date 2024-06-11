@@ -11,6 +11,8 @@ import ClubNoticeRegistPage from './page/Club/ClubNoticeRegistPage';
 import ClubRequestStatusPage from './page/Club/ClubRequestStatusPage';
 import KakaoLoginPage from './page/Login/KakaoLoginPage';
 import AdminClubApprovalPage from './page/Admin/AdminClubApprovalPage'
+import ClubDetailsPage from './page/Club/ClubDetailsPage';
+import ClubDetailsViewPage from './page/Club/ClubDetailsViewPage';
 
 function App() {
   return (
@@ -38,6 +40,13 @@ function App() {
 
             {/* 마스터 관리자의 승인/거절 페이지 */}
             <Route path='/admin/club/approval' element={<AdminClubApprovalPage />} />
+
+            {/* 동아리 관리자의 동아리 기본 정보 관리 페이지 */}
+            <Route path='/club/details' element={<ClubDetailsPage />} />
+
+            {/* 동아리별 동아리 소개 페이지 */}
+            <Route path='/club/view' element={<ClubDetailsViewPage />} />
+
           </Routes>
         </div>
       </Router>
