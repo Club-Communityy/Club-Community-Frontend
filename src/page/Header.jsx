@@ -16,7 +16,7 @@ const Header = () => {
 
 	const goToLogin = () => { navigate('/login'); }
 
-	const goToSignUp = () => { navigate('/signUp'); }
+	const goToSignUp = () => { navigate('/signup'); }
 
 	const handleLogout = () => {
 		logout();

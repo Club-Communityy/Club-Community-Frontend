@@ -12,8 +12,10 @@ import KakaoLoginPage from './page/Login/KakaoLoginPage';
 import AdminClubApprovalPage from './page/Admin/AdminClubApprovalPage'
 import ClubDetailsPage from './page/Club/ClubDetailsPage';
 import ClubDetailsViewPage from './page/Club/ClubDetailsViewPage';
-import ClubVideosPage from './page/Club/ClubVideosPage';
-import ClubVideosRegistPage from './page/Club/ClubVideosRegistPage';
+import ClubVideosPage from './page/Club/Videos/ClubVideosPage';
+import ClubVideosRegistPage from './page/Club/Videos/ClubVideosRegistPage';
+import ClubPhotosPage from './page/Club/Photos/ClubPhotosPage';
+import ClubJoinPage from './page/Club/Join/ClubJoinPage';
 
 function App() {
   return (
@@ -23,7 +25,7 @@ function App() {
         <div className='contents'>
           <Routes>
             <Route path='/' element={<MainPage />} />
-            <Route path='/signUp' element={<SignUpPage />} />
+            <Route path='/signup' element={<SignUpPage />} />
             <Route path='/login' element={<LoginPage />} />
             <Route path='/api/auth/kakao-code' element={<KakaoLoginPage />} />
             <Route path='/kakao-signup' element={<KakaoSignUpPage />} />
@@ -46,11 +48,20 @@ function App() {
             {/* 마스터 회원의 동아리 공지 등록 페이지 */}
             <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
 
-            {/* 마스터 회원의 활동 영상 페이지 */}
+            {/* 5. 일반 회원의 동아리 가입 신청 */}
+            <Route path='/club/join' element={<ClubJoinPage />} />
+
+            {/* 7. 마스터 회원의 활동 영상 페이지 */}
             <Route path='/club/videos' element={<ClubVideosPage />} />
 
-            {/* 마스터 회원의 활동 영상 페이지 */}
+            {/* 마스터 회원의 활동 영상 등록 페이지 */}
             <Route path='/club/regist/videos' element={<ClubVideosRegistPage />} />
+
+            {/* 마스터 회원의 활동 사진 페이지 */}
+            <Route path='/club/photos' element={<ClubPhotosPage />} />
+
+            {/* 마스터 회원의 활동 영상 등록 페이지 */}
+            <Route path='/club/regist/photos' element={<ClubVideosRegistPage />} />
 
           </Routes>
         </div>

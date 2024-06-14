@@ -9,7 +9,8 @@ import {
 	InputLabel,
 	Paper,
 	Divider,
-	Grid
+	Grid,
+	Button
 } from '@mui/material';
 
 const ClubDetailsViewPage = () => {
@@ -55,6 +56,26 @@ const ClubDetailsViewPage = () => {
 		fetchClubDetails(id);
 	};
 
+	const handleDownload = async () => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await axios.get(clubDetails.applicationFormUrl, {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				},
+				responseType: 'blob'
+			});
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', '동아리 가입 신청서 양식.hwp');
+			document.body.appendChild(link);
+			link.click();
+		} catch (error) {
+			console.error('Error downloading application form', error);
+		}
+	};
+
 	return (
 		<Box sx={{ mt: 3, px: 2 }}>
 			<Typography variant="h4" gutterBottom>동아리 소개</Typography>
@@ -80,10 +101,6 @@ const ClubDetailsViewPage = () => {
 							<Divider sx={{ mb: 2 }} />
 							<Typography variant="body1" paragraph>{clubDetails.introduction}</Typography>
 
-							<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>동아리 역사</Typography>
-							<Divider sx={{ mb: 2 }} />
-							<Typography variant="body1" paragraph>{clubDetails.history}</Typography>
-
 							<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>정기 모임 시간</Typography>
 							<Divider sx={{ mb: 2 }} />
 							<Typography variant="body1" paragraph>{clubDetails.regularMeetingTime}</Typography>
@@ -99,6 +116,14 @@ const ClubDetailsViewPage = () => {
 							<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>총무</Typography>
 							<Divider sx={{ mb: 2 }} />
 							<Typography variant="body1" paragraph>{clubDetails.treasurerName}</Typography>
+
+							<Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>동아리 가입 신청서</Typography>
+							<Divider sx={{ mb: 2 }} />
+							{clubDetails.applicationFormUrl && (
+								<Button variant="contained" color="primary" onClick={handleDownload}>
+									신청서 다운로드
+								</Button>
+							)}
 						</Grid>
 						<Grid item xs={12} md={4}>
 							{clubDetails.mainImage && (

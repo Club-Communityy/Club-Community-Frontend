@@ -1,6 +1,20 @@
 import React from 'react';
+import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardActions, Button, Typography, CardMedia } from '@mui/material';
+
+const ClubVideoCards = styled.div`
+	display: flex;
+	gap: 0 46px;
+	flex-flow: row wrap;
+
+	.video-card {
+		margin-top: 20px;
+		max-width: 350px;
+	}
+
+`
+
 const ClubVideosPage = () => {
 
 	const navigate = useNavigate();
@@ -12,16 +26,16 @@ const ClubVideosPage = () => {
 					등록하기
 				</Button>
 			</div>
-			<div>
-				<Card sx={{ maxWidth: 300 }}>
+			<ClubVideoCards>
+				<Card className="video-card">
 					<CardMedia
 						component="iframe"
-						src="https://www.youtube.com/embed/VIDEO_ID_HERE"
+						src="https://www.youtube.com/embed/lJLirTAUTYY"
 						title="YouTube video"
 						allowFullScreen
 					/>
 					<CardContent>
-						<Typography gutterBottom variant="h5" component="div">
+						<Typography gutterBottom variant="h6" component="div">
 							제목
 						</Typography>
 						<Typography variant="body2" color="text.secondary">
@@ -33,7 +47,7 @@ const ClubVideosPage = () => {
 						<Button size="small">삭제</Button>
 					</CardActions>
 				</Card>
-			</div>
+			</ClubVideoCards>
 		</div>
 	);
 };

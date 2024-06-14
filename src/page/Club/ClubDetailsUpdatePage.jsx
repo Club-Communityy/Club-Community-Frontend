@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TextField, Button, Box, Typography, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
-const ClubDetailsPage = () => {
+const ClubDetailsUpdatePage = () => {
 	const [clubId, setClubId] = useState('');
 	const [clubDetails, setClubDetails] = useState({
 		introduction: '',
+		history: '',
 		mainImage: null,
 		regularMeetingTime: '',
 		presidentName: '',
 		vicePresidentName: '',
 		treasurerName: '',
-		applicationFormUrl: '',
 	});
 	const [clubs, setClubs] = useState([]);
 
@@ -114,6 +114,16 @@ const ClubDetailsPage = () => {
 				margin="normal"
 			/>
 			<TextField
+				name="history"
+				label="동아리 역사"
+				value={clubDetails.history}
+				onChange={handleChange}
+				fullWidth
+				multiline
+				rows={4}
+				margin="normal"
+			/>
+			<TextField
 				name="regularMeetingTime"
 				label="정기 모임 시간"
 				value={clubDetails.regularMeetingTime}
@@ -155,7 +165,7 @@ const ClubDetailsPage = () => {
 				style={{ margin: '20px 0' }}
 			/>
 			<Button type="submit" variant="contained" color="primary">
-				업데이트
+				등록하기
 			</Button>
 		</Box>
 	);

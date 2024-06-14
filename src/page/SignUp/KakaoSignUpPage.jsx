@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import { AppContext } from "../../utils/loginContext"
 
 const KakaoSignUpPage = () => {
 
+	const { login } = useContext(AppContext);
 	const navigate = useNavigate();
-	const code = new URL(window.location.href).searchParams.get('code');
+	const location = useLocation();
+	const { email } = location.state;
 
 	const [signUpForm, setSignUpForm] = useState({
 		username: '',
@@ -20,7 +23,7 @@ const KakaoSignUpPage = () => {
 		studentId: '',
 		phoneNumber: '',
 		userType: 'ROLE_USER',
-		code: code,
+		email: email
 	});
 	const { username, birth, gender, department, studentId, phoneNumber } = signUpForm;
 
@@ -38,6 +41,7 @@ const KakaoSignUpPage = () => {
 			const response = await axios.post('http://localhost:8080/api/auth/kakao-register', signUpForm);
 
 			localStorage.setItem('token', response.data.token);
+			login();
 			navigate('/');
 		} catch (error) {
 			console.log(error);
