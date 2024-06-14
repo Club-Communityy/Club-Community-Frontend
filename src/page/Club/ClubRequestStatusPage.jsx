@@ -55,7 +55,7 @@ const ClubRequestStatusPage = () => {
 								<TableCell>{request.applicantDepartment}</TableCell>
 								<TableCell>{request.advisorName}</TableCell>
 								<TableCell>{request.advisorMajor}</TableCell>
-								<TableCell>{request.status}</TableCell>
+								<TableCell>{request.status === 'PENDING' ? '검토' : (request.status === 'APPROVED' ? '승인' : request.status === 'REJECTED' ? '거절' : '')}</TableCell>
 								<TableCell>{request.status === 'REJECTED' ? request.rejectionReason : '-'}</TableCell>
 							</TableRow>
 						))}
