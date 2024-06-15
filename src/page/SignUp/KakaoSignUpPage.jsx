@@ -41,6 +41,8 @@ const KakaoSignUpPage = () => {
 			const response = await axios.post('http://localhost:8080/api/auth/kakao-register', signUpForm);
 
 			localStorage.setItem('token', response.data.token);
+			localStorage.setItem('memberId', response.data.memberId);
+			localStorage.setItem('userType', response.data.userType);
 			login();
 			navigate('/');
 		} catch (error) {

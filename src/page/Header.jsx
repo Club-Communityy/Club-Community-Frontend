@@ -1,16 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../utils/loginContext';
 
 import './Header.css';
 
 const Header = () => {
-
 	const navigate = useNavigate();
 	const { isAuthenticated, logout } = useContext(AppContext);
-	const token = localStorage.getItem('token');
-
-	const [login, setLogin] = useState(false);
+	const userType = localStorage.getItem('userType');
 
 	const goToMain = () => { navigate('/'); }
 
@@ -22,6 +19,7 @@ const Header = () => {
 		logout();
 		navigate('/');
 	}
+
 	return (
 		<header>
 			<div className='header'>
@@ -29,9 +27,15 @@ const Header = () => {
 				{
 					isAuthenticated ? (
 						<div className='header-nav'>
-							<div onClick={() => { navigate('/club/regist'); }}>동아리등록</div>
-							<div onClick={() => { navigate('/club/request/status'); }}>신청현황</div>
-							<div onClick={() => { navigate('/club/details'); }}>동아리관리</div>
+							{userType === 'ROLE_ADMIN' ? (
+								<div onClick={() => { navigate('/admin/club/approval'); }}>동아리관리</div>
+							) : (
+								<>
+									<div onClick={() => { navigate('/club/regist'); }}>동아리등록</div>
+									<div onClick={() => { navigate('/club/request/status'); }}>신청현황</div>
+									<div onClick={() => { navigate('/club/details'); }}>동아리관리</div>
+								</>
+							)}
 							<div onClick={handleLogout}>로그아웃</div>
 						</div>
 					) : (

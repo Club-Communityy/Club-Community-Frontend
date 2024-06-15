@@ -14,10 +14,26 @@ const ClubDetailsPage = () => {
 		applicationFormUrl: '',
 	});
 	const [clubs, setClubs] = useState([]);
+	const [applicationForm, setApplicationForm] = useState(null);
 
 	useEffect(() => {
+		fetchCurrentUser();
 		fetchClubs();
 	}, []);
+
+	const fetchCurrentUser = async () => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await axios.get('http://localhost:8080/api/auth/me', {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			localStorage.setItem('memberId', response.data.id);
+		} catch (error) {
+			console.error('Error fetching current user', error);
+		}
+	};
 
 	const fetchClubs = async () => {
 		try {
@@ -47,6 +63,21 @@ const ClubDetailsPage = () => {
 		}
 	};
 
+	const checkClubDetailsExists = async (id) => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await axios.get(`http://localhost:8080/api/club-details/exists/${id}`, {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			return response.data;
+		} catch (error) {
+			console.error('Error checking club details existence', error);
+			return false;
+		}
+	};
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setClubDetails((prevDetails) => ({
@@ -62,21 +93,40 @@ const ClubDetailsPage = () => {
 		}));
 	};
 
+	const handleApplicationFormChange = (e) => {
+		setApplicationForm(e.target.files[0]);
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
 			const token = localStorage.getItem('token');
 			const formData = new FormData();
 			formData.append('clubId', clubId);
+			formData.append('memberId', localStorage.getItem('memberId'));
 			for (const key in clubDetails) {
 				formData.append(key, clubDetails[key]);
 			}
-			await axios.post('http://localhost:8080/api/club-details', formData, {
-				headers: {
-					'Authorization': `Bearer ${token}`,
-					'Content-Type': 'multipart/form-data',
-				}
-			});
+			if (applicationForm) {
+				formData.append('applicationForm', applicationForm);
+			}
+
+			const exists = await checkClubDetailsExists(clubId);
+			if (exists) {
+				await axios.put('http://localhost:8080/api/club-details', formData, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'multipart/form-data',
+					}
+				});
+			} else {
+				await axios.post('http://localhost:8080/api/club-details', formData, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'multipart/form-data',
+					}
+				});
+			}
 			alert('동아리 정보가 성공적으로 업데이트되었습니다.');
 		} catch (error) {
 			console.error('Error updating club details', error);
@@ -152,6 +202,15 @@ const ClubDetailsPage = () => {
 				type="file"
 				accept="image/*"
 				onChange={handleImageChange}
+				style={{ margin: '20px 0' }}
+			/>
+			<Typography variant="body1" gutterBottom>
+				동아리 가입 신청서:
+			</Typography>
+			<input
+				type="file"
+				accept=".hwp"
+				onChange={handleApplicationFormChange}
 				style={{ margin: '20px 0' }}
 			/>
 			<Button type="submit" variant="contained" color="primary">

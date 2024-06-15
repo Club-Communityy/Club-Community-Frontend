@@ -13,6 +13,8 @@ const AppProvider = ({ children }) => {
     const logout = () => {
         setState({ isAuthenticated: false });
         localStorage.removeItem('token');
+        localStorage.removeItem('memberId');
+        localStorage.removeItem('userType');
     };
 
     return (

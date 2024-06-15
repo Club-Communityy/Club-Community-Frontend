@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Button } from '@mui/material';
+import { TextField, Button, Box, Typography } from '@mui/material';
+
+const TitleContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+`
 
 const ButtonContainer = styled.div`
 	display: flex;
@@ -11,39 +16,48 @@ const ButtonContainer = styled.div`
 
 const ClubJoinPage = () => {
 	const location = useLocation();
-	const { clubId } = location.state;
-	const [memberId, setMemberId] = useState();
+	const { clubId, applicationFormUrl } = location.state || {};
+	const [clubDetails, setClubDetails] = useState({
+		name: '',
+		department: '',
+		studentId: '',
+	});
+
+	const [applicationForm, setApplicationForm] = useState(null);
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setClubDetails((prevDetails) => ({
+			...prevDetails,
+			[name]: value,
+		}));
+	};
+
 
 	const handleDownloadJoinForm = async () => {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await axios.get(`http://localhost:8080/api/club-application-forms/download/${clubId}`, {
+			const response = await axios.get(applicationFormUrl, {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				},
 				responseType: 'blob'
 			});
 
-			const contentDisposition = response.headers['content-disposition'];
-			let fileName = 'downloaded_file.hwp';
-			if (contentDisposition) {
-				const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-				if (fileNameMatch && fileNameMatch.length > 1) {
-					fileName = decodeURIComponent(fileNameMatch[1].replace(/['"]/g, ''));
-				}
-			}
-
-			const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+			const url = window.URL.createObjectURL(new Blob([response.data]));
 			const link = document.createElement('a');
-			link.href = downloadUrl;
-			link.setAttribute('download', fileName);
+			link.href = url;
+			link.setAttribute('download', '동아리 가입 신청서 양식.hwp');
 			document.body.appendChild(link);
 			link.click();
-			link.remove();
+			document.body.removeChild(link);
 		} catch (error) {
 			console.error('신청서 다운로드 오류:', error);
 		}
 	}
+
+	const handleApplicationFormChange = (e) => {
+		setApplicationForm(e.target.files[0]);
+	};
 
 	const handleJoinForm = async () => {
 
@@ -51,15 +65,48 @@ const ClubJoinPage = () => {
 
 	return (
 		<div>
-			<ButtonContainer>
-				<Button onClick={handleDownloadJoinForm}>신청서 다운로드</Button>
-			</ButtonContainer>
-			<div>
-
-			</div>
-			<ButtonContainer>
-				<Button onClick={handleJoinForm}>등록</Button>
-			</ButtonContainer>
+			<Box component="form" sx={{ mt: 3 }}>
+				<TitleContainer>
+					<Typography variant="h4" gutterBottom>동아리 가입 신청</Typography>
+					<Button onClick={handleDownloadJoinForm}>신청서 다운로드</Button>
+				</TitleContainer>
+				<TextField
+					name="name"
+					label="이름"
+					value={clubDetails.name}
+					onChange={handleChange}
+					fullWidth
+					margin="normal"
+				/>
+				<TextField
+					name="department"
+					label="학과"
+					value={clubDetails.department}
+					onChange={handleChange}
+					fullWidth
+					margin="normal"
+				/>
+				<TextField
+					name="studentId"
+					label="학번"
+					value={clubDetails.studentId}
+					onChange={handleChange}
+					fullWidth
+					margin="normal"
+				/>
+				<Typography variant="body1" gutterBottom>
+					동아리 가입 신청서:
+				</Typography>
+				<input
+					type="file"
+					accept=".hwp"
+					onChange={handleApplicationFormChange}
+					style={{ margin: '10px 0' }}
+				/>
+				<ButtonContainer>
+					<Button variant="contained" color="primary" onClick={handleJoinForm}>등록</Button>
+				</ButtonContainer>
+			</Box>
 		</div >
 	);
 };

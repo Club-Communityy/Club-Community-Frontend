@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardActions, Button, Typography, CardMedia } from '@mui/material';
+import axios from 'axios';
 
 const ClubVideoCards = styled.div`
 	display: flex;
@@ -18,6 +19,24 @@ const ClubVideoCards = styled.div`
 const ClubVideosPage = () => {
 
 	const navigate = useNavigate();
+	const [clubVideoList, setClubVideoList] = useState([]);
+
+	const fetchClubVideo = async () => {
+		try {
+			const response = await axios.get('http://localhost:8080/api/post/video');
+			const modifiedData = response.data.map(video => ({
+				...video,
+				videoUrl: video.videoUrl.replace("watch?v=", "embed/")
+			}));
+			setClubVideoList(modifiedData.reverse());
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchClubVideo();
+	}, [])
 
 	return (
 		<div>
@@ -27,26 +46,28 @@ const ClubVideosPage = () => {
 				</Button>
 			</div>
 			<ClubVideoCards>
-				<Card className="video-card">
-					<CardMedia
-						component="iframe"
-						src="https://www.youtube.com/embed/lJLirTAUTYY"
-						title="YouTube video"
-						allowFullScreen
-					/>
-					<CardContent>
-						<Typography gutterBottom variant="h6" component="div">
-							제목
-						</Typography>
-						<Typography variant="body2" color="text.secondary">
-							기타 정보
-						</Typography>
-					</CardContent>
-					<CardActions>
-						<Button size="small">수정</Button>
-						<Button size="small">삭제</Button>
-					</CardActions>
-				</Card>
+				{clubVideoList.map(video => (
+					<Card key={video.id} className="video-card">
+						<CardMedia
+							component="iframe"
+							src={video.videoUrl}
+							title="YouTube video"
+							allowFullScreen
+						/>
+						<CardContent>
+							<Typography gutterBottom variant="h6" component="div">
+								{video.title}
+							</Typography>
+							<Typography variant="body2" color="text.secondary">
+								{video.clubName}
+							</Typography>
+						</CardContent>
+						<CardActions>
+							<Button size="small">수정</Button>
+							<Button size="small">삭제</Button>
+						</CardActions>
+					</Card>
+				))}
 			</ClubVideoCards>
 		</div>
 	);

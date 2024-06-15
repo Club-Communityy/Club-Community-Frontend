@@ -1,23 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ActivityPhotos.css';
+import axios from 'axios';
 
 const ActivityPhotos = () => {
-	// 활동사진 경로 배열
-	const photoPaths = [
-		"https://example.com/photo1.jpg",
-		"https://example.com/photo2.jpg",
-		"https://example.com/photo3.jpg",
-		// 추가적인 사진 경로들을 필요에 따라 배열에 추가할 수 있습니다.
-	];
+
+	const navigate = useNavigate();
+	const [clubPhotoList, setClubPhotoList] = useState([]);
+	const [displayedPhotos, setDisplayedPhotos] = useState([]);
+
+	const fetchClubPhoto = async () => {
+		try {
+			const response = await axios.get('http://localhost:8080/api/post/photo');
+			setClubPhotoList(response.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchClubPhoto();
+	}, [])
+
+	useEffect(() => {
+		setDisplayedPhotos(clubPhotoList.reverse().slice(0, 3));
+	}, [clubPhotoList]);
 
 	return (
 		<div>
 			<div className='main-title'>활동사진</div>
 			<div className="activity-photos">
-				{photoPaths.map((path, index) => (
-					<div key={index} className="activity-photo">
-						<img src={path} alt={`활동 사진 ${index + 1}`} />
-						<div>활동 사진 제목</div>
+				{displayedPhotos.map((photo) => (
+					<div key={photo.id} className="activity-photo">
+						<img src={`data:image/png;base64,${photo.image}`} alt={photo.title} />
+						<div>{photo.title}</div>
 					</div>
 				))}
 			</div>

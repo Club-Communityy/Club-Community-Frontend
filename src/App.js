@@ -16,6 +16,7 @@ import ClubVideosPage from './page/Club/Videos/ClubVideosPage';
 import ClubVideosRegistPage from './page/Club/Videos/ClubVideosRegistPage';
 import ClubPhotosPage from './page/Club/Photos/ClubPhotosPage';
 import ClubJoinPage from './page/Club/Join/ClubJoinPage';
+import ClubPhotosRegistPage from './page/Club/Photos/ClubPhotosRegistPage';
 
 function App() {
   return (
@@ -60,8 +61,8 @@ function App() {
             {/* 마스터 회원의 활동 사진 페이지 */}
             <Route path='/club/photos' element={<ClubPhotosPage />} />
 
-            {/* 마스터 회원의 활동 영상 등록 페이지 */}
-            <Route path='/club/regist/photos' element={<ClubVideosRegistPage />} />
+            {/* 마스터 회원의 활동 사진 등록 페이지 */}
+            <Route path='/club/regist/photos' element={<ClubPhotosRegistPage />} />
 
           </Routes>
         </div>

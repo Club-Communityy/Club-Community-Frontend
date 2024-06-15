@@ -32,7 +32,8 @@ const LoginPage = () => {
 			const response = await axios.post('http://localhost:8080/api/auth/login', loginForm);
 
 			localStorage.setItem('token', response.data.token);
-
+			localStorage.setItem('memberId', response.data.memberId);
+			localStorage.setItem('userType', response.data.userType);
 			login();
 			navigate('/');
 		} catch (error) {

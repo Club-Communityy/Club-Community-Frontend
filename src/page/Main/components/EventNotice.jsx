@@ -23,10 +23,9 @@ const EventNotice = () => {
 		<div>
 			<div className='main-notice-top'>
 				<div className='main-title'>동아리 행사 공지</div>
-				<div>더보기</div>
 			</div>
 			<TableContainer>
-				<Table sx={{ minWidth: 500 }} aria-label="simple table">
+				<Table sx={{ minWidth: 480 }} aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell>제목</TableCell>

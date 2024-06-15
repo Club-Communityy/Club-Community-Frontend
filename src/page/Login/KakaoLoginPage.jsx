@@ -18,6 +18,8 @@ const KakaoLoginPage = () => {
 				getKaKaoUserData(response.data.token)
 			} else if (response.data.type === 'BEARER') {
 				localStorage.setItem('token', response.data.token);
+				localStorage.setItem('memberId', response.data.memberId);
+				localStorage.setItem('userType', response.data.userType);
 				login();
 				navigate('/');
 			}
