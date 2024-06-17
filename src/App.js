@@ -6,7 +6,6 @@ import SignUpPage from './page/SignUp/SignUpPage';
 import LoginPage from './page/Login/LoginPage';
 import ClubRegistPage from './page/Club/ClubRegistPage';
 import KakaoSignUpPage from './page/SignUp/KakaoSignUpPage';
-import ClubNoticeRegistPage from './page/Club/ClubNoticeRegistPage';
 import ClubRequestStatusPage from './page/Club/ClubRequestStatusPage';
 import KakaoLoginPage from './page/Login/KakaoLoginPage';
 import AdminClubApprovalPage from './page/Admin/AdminClubApprovalPage'
@@ -17,6 +16,12 @@ import ClubVideosRegistPage from './page/Club/Videos/ClubVideosRegistPage';
 import ClubPhotosPage from './page/Club/Photos/ClubPhotosPage';
 import ClubJoinPage from './page/Club/Join/ClubJoinPage';
 import ClubPhotosRegistPage from './page/Club/Photos/ClubPhotosRegistPage';
+import ClubJoinListPage from './page/Club/Join/ClubJoinListPage';
+import ClubMemberList from './page/Club/Member/ClubMemberListPage';
+import ClubNoticeRegistPage from './page/Club/Notice/ClubNoticeRegistPage';
+import RecruitmentPostDetail from './page/Club/Recruit/RecruitmentPostDetail';
+import RecruitmentPost from './page/Club/Recruit/RecruitmentPost';
+import RecruitmentRegist from './page/Club/Recruit/RecruitmentRegist';
 
 function App() {
   return (
@@ -46,11 +51,13 @@ function App() {
             {/* 동아리별 동아리 소개 페이지 */}
             <Route path='/club/view' element={<ClubDetailsViewPage />} />
 
-            {/* 마스터 회원의 동아리 공지 등록 페이지 */}
-            <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
-
-            {/* 5. 일반 회원의 동아리 가입 신청 */}
+            {/* 5. 일반 회원의 동아리 가입 신청 페이지 */}
             <Route path='/club/join' element={<ClubJoinPage />} />
+
+
+            {/* 6. 마스터 회원의 동아리 부원 관리 */}
+            <Route path='/club/join/list' element={<ClubJoinListPage />} />
+            <Route path='/club/member/list' element={<ClubMemberList />} />
 
             {/* 7. 마스터 회원의 활동 영상 페이지 */}
             <Route path='/club/videos' element={<ClubVideosPage />} />
@@ -64,6 +71,13 @@ function App() {
             {/* 마스터 회원의 활동 사진 등록 페이지 */}
             <Route path='/club/regist/photos' element={<ClubPhotosRegistPage />} />
 
+            {/* 마스터 회원의 동아리 공지 등록 페이지 */}
+            <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
+
+            {/* 동아리 모집 상세조회 페이지 */}
+            <Route path='/club/recruits' element={<RecruitmentPost />} />
+            <Route path='/club/recruit/:postId' element={<RecruitmentPostDetail />} />
+            <Route path='/club/recruit/regist' element={<RecruitmentRegist />} />
           </Routes>
         </div>
       </Router>

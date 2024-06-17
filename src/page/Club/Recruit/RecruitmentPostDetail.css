@@ -1,0 +1,31 @@
+/* RecruitmentPostDetail.css */
+
+.post-detail-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #f9f9f9;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-title {
+	font-size: 24px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 10px;
+	color: #333;
+}
+
+.post-metadata {
+	font-size: 16px;
+	margin-bottom: 8px;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 8px;
+}
+
+.post-content {
+	font-size: 18px;
+	line-height: 1.6;
+}

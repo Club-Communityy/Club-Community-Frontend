@@ -21,6 +21,7 @@ const ClubDetailsViewPage = () => {
 	const [clubId, setClubId] = useState('');
 	const [clubDetails, setClubDetails] = useState(null);
 	const [clubs, setClubs] = useState([]);
+	const [canJoin, setCanJoin] = useState(false);
 
 	useEffect(() => {
 		fetchClubs();
@@ -49,14 +50,31 @@ const ClubDetailsViewPage = () => {
 				}
 			});
 			setClubDetails(response.data);
+			fetchJoinPermission(id, token);
 		} catch (error) {
 			if (error.response && error.response.status === 404) {
 				setClubDetails(null);
+				setCanJoin(false);
 			} else {
 				console.error('Error fetching club details', error);
 			}
 		}
 	};
+
+	const fetchJoinPermission = async (id, token) => {
+		try {
+			const response = await axios.get(`http://localhost:8080/api/auth/check-join/${id}`, {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			setCanJoin(response.data);
+		} catch (error) {
+			console.error('Error checking join permission', error);
+			setCanJoin(false); // Default to false on error
+		}
+	};
+
 
 	const handleClubChange = (e) => {
 		const id = e.target.value;
@@ -67,7 +85,7 @@ const ClubDetailsViewPage = () => {
 	const handleDownload = async () => {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await axios.get(clubDetails.applicationFormUrl, {
+			const response = await axios.get('http://localhost:8080' + clubDetails.applicationFormUrl, {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				},
@@ -150,19 +168,27 @@ const ClubDetailsViewPage = () => {
 							</Grid>
 						</Grid>
 						<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={() => {
-									navigate('/club/join', {
-										state: {
-											clubId: clubId,
-											applicationFormUrl: clubDetails.applicationFormUrl
-										}
-									})
-								}}>
-								가입신청
-							</Button>
+							{!canJoin && (
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={() => {
+										navigate('/club/join', {
+											state: {
+												clubId: clubId,
+												applicationFormUrl: clubDetails.applicationFormUrl
+											}
+										});
+									}}
+								>
+									가입신청
+								</Button>
+							)}
+							{canJoin && (
+								<Typography variant="body1">
+									이미 회원 등록이 되었습니다!
+								</Typography>
+							)}
 						</div>
 					</Paper>
 				) : (

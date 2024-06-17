@@ -7,8 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 
-const RecruitBoard = () => {
+const RecruitmentPost = () => {
 	const [recruitmentPosts, setRecruitmentPosts] = useState([]);
 	const navigate = useNavigate();
 
@@ -33,10 +34,20 @@ const RecruitBoard = () => {
 		navigate(`/club/recruit/${postId}`);
 	};
 
+	const handleRegisterClick = () => {
+		navigate('/club/recruit/regist');
+	};
+
 	return (
 		<div>
 			<div className='main-notice-top'>
 				<div className='main-title'>부원 모집 게시판</div>
+				<Button
+					variant="contained" color="primary"
+					onClick={handleRegisterClick}
+				>
+					등록하기
+				</Button>
 			</div>
 			<TableContainer component={Paper}>
 				<Table sx={{ minWidth: 480 }} aria-label="simple table">
@@ -62,4 +73,4 @@ const RecruitBoard = () => {
 	);
 };
 
-export default RecruitBoard;
+export default RecruitmentPost;

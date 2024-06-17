@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -16,9 +16,14 @@ const ButtonContainer = styled.div`
 
 const ClubJoinPage = () => {
 	const location = useLocation();
+	const token = localStorage.getItem('token');
+	const memberId = localStorage.getItem('memberId');
 	const { clubId, applicationFormUrl } = location.state || {};
 	const [clubDetails, setClubDetails] = useState({
-		name: '',
+		clubId: clubId,
+		memberId: memberId,
+		file: null,
+		memberName: '',
 		department: '',
 		studentId: '',
 	});
@@ -32,11 +37,31 @@ const ClubJoinPage = () => {
 		}));
 	};
 
+	const handleGetMyInfo = async () => {
+		try {
+			const response = await axios.get('http://localhost:8080/api/auth/me', {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			})
+			const userInfo = response.data;
+
+			setClubDetails(prevState => ({
+				...prevState,
+				memberName: userInfo.username,
+				department: userInfo.department,
+				studentId: userInfo.studentId,
+			}))
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 
 	const handleDownloadJoinForm = async () => {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await axios.get(applicationFormUrl, {
+			const response = await axios.get('http://localhost:8080' + applicationFormUrl, {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				},
@@ -60,8 +85,32 @@ const ClubJoinPage = () => {
 	};
 
 	const handleJoinForm = async () => {
+		try {
+			const formData = new FormData();
+			formData.append('clubId', clubDetails.clubId);
+			formData.append('memberId', clubDetails.memberId);
+			formData.append('file', applicationForm);
+			formData.append('memberName', clubDetails.memberName);
+			formData.append('department', clubDetails.department);
+			formData.append('studentId', clubDetails.studentId);
 
+			const response = await axios.post('http://localhost:8080/api/club-members/apply', formData, {
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+
+			alert('가입 신청이 제출되었습니다!');
+
+		} catch (error) {
+			console.error('가입 신청 제출 오류:', error);
+		}
 	};
+
+	useEffect(() => {
+		handleGetMyInfo();
+	}, [])
 
 	return (
 		<div>
@@ -71,9 +120,9 @@ const ClubJoinPage = () => {
 					<Button onClick={handleDownloadJoinForm}>신청서 다운로드</Button>
 				</TitleContainer>
 				<TextField
-					name="name"
+					name="memberName"
 					label="이름"
-					value={clubDetails.name}
+					value={clubDetails.memberName}
 					onChange={handleChange}
 					fullWidth
 					margin="normal"
