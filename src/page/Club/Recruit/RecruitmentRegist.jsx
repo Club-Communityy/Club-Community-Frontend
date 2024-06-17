@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Quill from 'quill'; // Quill 라이브러리 불러오기
 import 'quill/dist/quill.snow.css'; // Quill의 스타일 시트 불러오기
@@ -19,6 +19,7 @@ const RecruitmentRegist = () => {
 	const [clubId, setClubId] = useState('');
 	const [clubs, setClubs] = useState([]);
 	const [image, setImage] = useState(null); // 단일 이미지 상태 설정
+	const quillRef = useRef(null); // Quill 인스턴스를 참조하기 위한 useRef
 
 	useEffect(() => {
 		fetchClubs();
@@ -38,8 +39,6 @@ const RecruitmentRegist = () => {
 		}
 	};
 
-	const quillRef = React.useRef(null);
-
 	useEffect(() => {
 		let quill = null;
 
@@ -57,35 +56,23 @@ const RecruitmentRegist = () => {
 				},
 			});
 
-			quill.getModule('toolbar').addHandler('image', () => {
-				const input = document.createElement('input');
-				input.setAttribute('type', 'file');
-				input.setAttribute('accept', 'image/*');
-				input.click();
-
-				input.onchange = async () => {
-					const file = input.files[0];
-					const imageDataUrl = await readImageFile(file);
-					const range = quill.getSelection();
-					quill.clipboard.dangerouslyPasteHTML(range.index, `<img src="${imageDataUrl}" alt="${file.name}">`);
-					setImage(file);
-				};
-			});
-
 			quill.on('text-change', () => {
 				setContent(quill.root.innerHTML);
 			});
 		}
 
+		// 초기 content 설정
+		if (quill && content) {
+			quill.clipboard.dangerouslyPasteHTML(content);
+		}
+
 		return () => {
 			if (quill !== null) {
 				quill.off('text-change');
-				quill.getModule('toolbar').removeHandler('image');
-				quill.destroy();
 				quill = null;
 			}
 		};
-	}, []);
+	}, [content]);
 
 	const readImageFile = (file) => {
 		return new Promise((resolve, reject) => {
