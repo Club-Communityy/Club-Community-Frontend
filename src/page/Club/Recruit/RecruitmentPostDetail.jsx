@@ -32,7 +32,10 @@ const RecruitmentPostDetail = () => {
 		<div className="post-detail-container">
 			<h2 className="post-title">{post.title}</h2>
 			<p className="post-metadata"><strong>동아리명 </strong> {post.clubName}</p>
-			<p className="post-content">{post.content}</p>
+			<div
+				className="post-content"
+				dangerouslySetInnerHTML={{ __html: post.content }}
+			></div>
 		</div>
 	);
 };

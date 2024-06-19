@@ -38,7 +38,7 @@ const ClubDetailsPage = () => {
 	const fetchClubs = async () => {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await axios.get('http://localhost:8080/api/clubs/my-applications', {
+			const response = await axios.get('http://localhost:8080/api/clubs/my-applications/approved', {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				}

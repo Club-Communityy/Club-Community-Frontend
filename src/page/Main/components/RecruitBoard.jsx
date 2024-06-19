@@ -20,7 +20,7 @@ const RecruitBoard = () => {
 					throw new Error('Network response was not ok');
 				}
 				const data = await response.json();
-				setRecruitmentPosts(data.reverse());
+				setRecruitmentPosts(data.reverse().slice(0, 5));
 			} catch (error) {
 				console.error('Error fetching recruitment posts:', error);
 			}

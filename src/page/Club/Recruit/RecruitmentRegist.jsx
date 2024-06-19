@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Quill from 'quill'; // Quill 라이브러리 불러오기
-import 'quill/dist/quill.snow.css'; // Quill의 스타일 시트 불러오기
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import {
 	TextField,
 	Button,
@@ -14,12 +15,12 @@ import {
 } from '@mui/material';
 
 const RecruitmentRegist = () => {
+	const navigate = useNavigate();
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [clubId, setClubId] = useState('');
 	const [clubs, setClubs] = useState([]);
-	const [image, setImage] = useState(null); // 단일 이미지 상태 설정
-	const quillRef = useRef(null); // Quill 인스턴스를 참조하기 위한 useRef
+	const [image, setImage] = useState(null);
 
 	useEffect(() => {
 		fetchClubs();
@@ -28,7 +29,7 @@ const RecruitmentRegist = () => {
 	const fetchClubs = async () => {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await axios.get('http://localhost:8080/api/clubs/my-applications', {
+			const response = await axios.get('http://localhost:8080/api/clubs/my-applications/approved', {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -38,41 +39,6 @@ const RecruitmentRegist = () => {
 			console.error('Error fetching clubs', error);
 		}
 	};
-
-	useEffect(() => {
-		let quill = null;
-
-		if (quillRef.current) {
-			quill = new Quill(quillRef.current, {
-				theme: 'snow',
-				modules: {
-					toolbar: [
-						[{ header: [1, 2, 3, 4, 5, 6, false] }],
-						['bold', 'italic', 'underline'],
-						['link', 'image'],
-						[{ list: 'ordered' }, { list: 'bullet' }],
-						['clean'],
-					],
-				},
-			});
-
-			quill.on('text-change', () => {
-				setContent(quill.root.innerHTML);
-			});
-		}
-
-		// 초기 content 설정
-		if (quill && content) {
-			quill.clipboard.dangerouslyPasteHTML(content);
-		}
-
-		return () => {
-			if (quill !== null) {
-				quill.off('text-change');
-				quill = null;
-			}
-		};
-	}, [content]);
 
 	const readImageFile = (file) => {
 		return new Promise((resolve, reject) => {
@@ -87,15 +53,11 @@ const RecruitmentRegist = () => {
 	const handleSubmit = () => {
 		const formData = new FormData();
 		if (image) {
-			formData.append('image', image); // 이미지 추가
+			formData.append('image', image);
 		}
 		formData.append('title', title);
 		formData.append('content', content);
 		formData.append('clubId', clubId);
-
-		for (let pair of formData.entries()) {
-			console.log(pair[0] + ', ' + pair[1]);
-		}
 
 		axios
 			.post('http://localhost:8080/api/post/recruitment/regist', formData, {
@@ -105,9 +67,10 @@ const RecruitmentRegist = () => {
 			})
 			.then((res) => {
 				if (res.status === 200) {
-					alert('공지사항이 성공적으로 등록되었습니다.');
+					alert('부원모집이 성공적으로 등록되었습니다.');
+					navigate('/club/recruits');
 				} else {
-					alert('공지사항 등록 실패.');
+					alert('부원모집 등록 실패.');
 				}
 			})
 			.catch((err) => {
@@ -118,10 +81,22 @@ const RecruitmentRegist = () => {
 			});
 	};
 
+	const quillRef = React.useRef();
+
+	const modules = {
+		toolbar: {
+			container: [
+				[{ header: [1, 2, 3, 4, 5, false] }],
+				["bold", "underline"],
+				["image"],
+			],
+		},
+	};
+
 	return (
 		<Box>
 			<Typography variant="h5" gutterBottom>
-				동아리 공지 등록
+				동아리 부원 모집 등록
 			</Typography>
 			<FormControl fullWidth margin="normal">
 				<InputLabel id="club-select-label">동아리 선택</InputLabel>
@@ -145,10 +120,18 @@ const RecruitmentRegist = () => {
 				value={title}
 				onChange={(e) => setTitle(e.target.value)}
 			/>
-			<div ref={quillRef} style={{ height: '400px' }} />
-			<Button variant="contained" color="primary" onClick={handleSubmit}>
-				제출
-			</Button>
+			<ReactQuill
+				ref={quillRef}
+				value={content}
+				onChange={setContent}
+				modules={modules}
+				style={{ height: '350px' }}
+			/>
+			<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '50px' }}>
+				<Button variant="contained" color="primary" onClick={handleSubmit}>
+					제출
+				</Button>
+			</div>
 		</Box>
 	);
 };

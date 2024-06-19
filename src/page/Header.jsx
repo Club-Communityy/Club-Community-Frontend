@@ -50,7 +50,7 @@ const Header = () => {
 			</div>
 			<div className='header-nav-bar'>
 				<div onClick={() => { navigate('/club/view'); }}>동아리 조회</div>
-				<div onClick={() => { navigate('/club/events'); }}>동아리 행사</div>
+				<div onClick={() => { navigate('/club/notices'); }}>동아리 행사</div>
 				<div onClick={() => { navigate('/club/recruits'); }}>부원 모집</div>
 				<div onClick={() => { navigate('/club/videos'); }}>동영상</div>
 				<div onClick={() => { navigate('/club/photos'); }}>사진</div>

@@ -1,96 +1,141 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+	TextField,
+	Button,
+	Box,
+	Typography,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
+	Switch,
+	FormControlLabel,
+} from '@mui/material';
 import axios from 'axios';
-import Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const ClubNoticeRegistPage = () => {
-	const [content, setContent] = useState("");
-	const [images, setImages] = useState([]);
+	const navigate = useNavigate();
+	const [title, setTitle] = useState('');
+	const [content, setContent] = useState('');
+	const [clubId, setClubId] = useState('');
+	const [clubs, setClubs] = useState([]);
+	const [image, setImage] = useState(null);
+	const [isAccount, setIsAccount] = useState(true);
 
-	const customUploadAdapter = (loader) => {
-		return {
-			upload() {
-				return new Promise((resolve, reject) => {
-					loader.file.then((file) => {
-						const reader = new FileReader();
-						reader.onload = () => {
-							const base64 = reader.result;
-							setImages((prevImages) => [...prevImages, { file, base64 }]);
-							resolve({ default: base64 });
-						};
-						reader.readAsDataURL(file);
-					});
-				});
-			},
-		};
+	useEffect(() => {
+		fetchClubs();
+	}, [isAccount]);
+
+	const fetchClubs = async () => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await axios.get('http://localhost:8080/api/clubs/my-applications/approved', {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setClubs(response.data);
+		} catch (error) {
+			console.error('Error fetching clubs', error);
+		}
 	};
-
-	function uploadPlugin(editor) {
-		editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-			return customUploadAdapter(loader);
-		};
-	}
 
 	const handleSubmit = () => {
 		const formData = new FormData();
-		images.forEach((image) => {
-			formData.append("files", image.file);
-		});
+		if (image) {
+			formData.append('image', image); // 이미지 추가
+		}
+		formData.append('title', title);
+		formData.append('content', content);
+		formData.append('clubId', clubId);
+		formData.append('isAccount', isAccount);
 
-		axios.post("http://localhost:8080/api/v0/file/upload", formData)
-			.then((res) => {
-				if (res.status === 200) {
-					const imageUrls = res.data.data.map((file) => file.uri);
-					const updatedContent = content;
-
-					// 이미지 URL을 실제 콘텐츠에 반영해야 한다면 이 부분에서 처리합니다.
-					// updatedContent = ...
-
-					const data = {
-						content: updatedContent,
-					};
-
-					return axios.post("http://localhost:8080/api/v0/post", data);
-				} else {
-					throw new Error("Image upload failed");
-				}
+		axios
+			.post('http://localhost:8080/api/post/notification/regist', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
 			})
 			.then((res) => {
 				if (res.status === 200) {
-					// navigate("/", { replace: true });
-					alert("공지사항이 성공적으로 등록되었습니다.");
+					alert('공지사항이 성공적으로 등록되었습니다.');
+					navigate('/club/notices');
 				} else {
-					alert("공지사항 등록 실패.");
+					alert('공지사항 등록 실패.');
 				}
 			})
 			.catch((err) => {
-				alert("업로드 실패: " + err.message);
+				console.error('등록 실패:', err);
+				if (err.response) {
+					console.error('서버 응답:', err.response.data);
+				}
 			});
 	};
 
+	const quillRef = React.useRef();
+
+	const modules = {
+		toolbar: {
+			container: [
+				[{ header: [1, 2, 3, 4, 5, false] }],
+				["bold", "underline"],
+				["image"],
+			],
+		},
+	};
+
 	return (
-		<div>
-			<div>동아리 공지</div>
-			<CKEditor
-				editor={Editor}
-				data=""
-				config={{ extraPlugins: [uploadPlugin] }}
-				onReady={(editor) => {
-					console.log("Editor is ready to use!", editor);
-				}}
-				onChange={(event, editor) => {
-					setContent(editor.getData());
-					console.log({ event, editor, content });
-				}}
-				onBlur={(event, editor) => {
-					console.log("Blur.", editor);
-				}}
-				onFocus={(event, editor) => {
-					console.log("Focus.", editor);
-				}}
+		<Box>
+			<Typography variant="h5" gutterBottom>
+				동아리 공지 등록
+			</Typography>
+			<FormControlLabel
+				control={
+					<Switch
+						checked={isAccount}
+						onChange={(e) => setIsAccount(e.target.checked)}
+					/>
+				}
+				label="전체보기"
 			/>
-			<button onClick={handleSubmit}>제출</button>
-		</div>
+			<FormControl fullWidth margin="normal">
+				<InputLabel id="club-select-label">동아리 선택</InputLabel>
+				<Select
+					labelId="club-select-label"
+					value={clubId}
+					onChange={(e) => setClubId(e.target.value)}
+				>
+					{clubs.map((club) => (
+						<MenuItem key={club.id} value={club.id}>
+							{club.name}
+						</MenuItem>
+					))}
+				</Select>
+			</FormControl>
+			<TextField
+				label="제목"
+				variant="outlined"
+				fullWidth
+				margin="normal"
+				value={title}
+				onChange={(e) => setTitle(e.target.value)}
+			/>
+			<ReactQuill
+				ref={quillRef}
+				value={content}
+				onChange={setContent}
+				modules={modules}
+				style={{ height: '350px' }}
+			/>
+			<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '50px' }}>
+				<Button variant="contained" color="primary" onClick={handleSubmit}>
+					제출
+				</Button>
+			</div>
+		</Box>
 	);
 }
 

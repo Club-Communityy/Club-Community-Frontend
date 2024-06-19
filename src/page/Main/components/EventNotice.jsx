@@ -1,49 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-
-function createData(name, calories, fat, carbs) {
-	return { name, calories, fat, carbs };
-}
-
-const rows = [
-	createData('Frozen yoghurt', 159, 6.0, 24),
-	createData('Ice cream sandwich', 237, 9.0, 3),
-	createData('Eclair', 262, 16.0, 24),
-	createData('Cupcake', 305, 3.7, 67),
-	createData('Gingerbread', 356, 16.0, 49),
-];
+import Paper from '@mui/material/Paper';
 
 const EventNotice = () => {
+	const [recruitmentPosts, setRecruitmentPosts] = useState([]);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await fetch('http://localhost:8080/api/post/notification');
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				const data = await response.json();
+				setRecruitmentPosts(data.reverse().slice(0, 5));
+			} catch (error) {
+				console.error('Error fetching recruitment posts:', error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	const handleRowClick = (postId) => {
+		navigate(`/club/notice/${postId}`);
+	};
+
 	return (
 		<div>
 			<div className='main-notice-top'>
-				<div className='main-title'>동아리 행사 공지</div>
+				<div className='main-title'>동아리 공지 게시판</div>
 			</div>
-			<TableContainer>
+			<TableContainer component={Paper}>
 				<Table sx={{ minWidth: 480 }} aria-label="simple table">
 					<TableHead>
 						<TableRow>
+							<TableCell>번호</TableCell>
 							<TableCell>제목</TableCell>
 							<TableCell>동아리명</TableCell>
-							<TableCell>작성자</TableCell>
-							<TableCell>작성일</TableCell>
+							<TableCell>공개</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.map((row) => (
-							<TableRow
-								key={row.name}
-								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-							>
-								<TableCell>{row.name}</TableCell>
-								<TableCell>{row.calories}</TableCell>
-								<TableCell>{row.fat}</TableCell>
-								<TableCell>{row.carbs}</TableCell>
+						{recruitmentPosts.map((post, index) => (
+							<TableRow key={post.id} onClick={() => handleRowClick(post.id)}>
+								<TableCell>{index + 1}</TableCell>
+								<TableCell>{post.title}</TableCell>
+								<TableCell>{post.clubName}</TableCell>
+								<TableCell>{post.isAccount ? '전체' : '부원'}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

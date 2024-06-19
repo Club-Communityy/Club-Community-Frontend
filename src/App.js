@@ -22,6 +22,8 @@ import ClubNoticeRegistPage from './page/Club/Notice/ClubNoticeRegistPage';
 import RecruitmentPostDetail from './page/Club/Recruit/RecruitmentPostDetail';
 import RecruitmentPost from './page/Club/Recruit/RecruitmentPost';
 import RecruitmentRegist from './page/Club/Recruit/RecruitmentRegist';
+import ClubNoticesPage from './page/Club/Notice/ClubNoticesPage';
+import ClubNoticeDetailPage from './page/Club/Notice/ClubNoticeDetailPage';
 
 function App() {
   return (
@@ -71,13 +73,16 @@ function App() {
             {/* 마스터 회원의 활동 사진 등록 페이지 */}
             <Route path='/club/regist/photos' element={<ClubPhotosRegistPage />} />
 
-            {/* 마스터 회원의 동아리 공지 등록 페이지 */}
-            <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
-
             {/* 동아리 모집 상세조회 페이지 */}
             <Route path='/club/recruits' element={<RecruitmentPost />} />
             <Route path='/club/recruit/:postId' element={<RecruitmentPostDetail />} />
             <Route path='/club/recruit/regist' element={<RecruitmentRegist />} />
+
+            {/* 동아리 공지 게시판 조회 페이지 */}
+            <Route path='/club/notices' element={<ClubNoticesPage />} />
+            <Route path='/club/notice/:noticeId' element={<ClubNoticeDetailPage />} />
+            <Route path='/club/notice/regist' element={<ClubNoticeRegistPage />} />
+
           </Routes>
         </div>
       </Router>
