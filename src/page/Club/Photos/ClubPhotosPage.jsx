@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardActions, Button, Typography, CardMedia } from '@mui/material';
 import axios from 'axios';
 
@@ -48,7 +48,7 @@ const ClubPhotosPage = () => {
 			</div>
 			<ClubPhotoCards>
 				{clubPhotoList.reverse().map((photo) => (
-					<Card key={photo.id} className="photo-card">
+					<Card key={photo.id} className="photo-card" onClick={() => navigate(`/club/photos/${photo.id}`)}>
 						<CardMedia component="img" src={`data:image/png;base64,${photo.image}`} title={photo.title} />
 						<CardContent>
 							<Typography gutterBottom variant="h6" component="div">

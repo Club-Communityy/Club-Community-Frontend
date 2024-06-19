@@ -20,6 +20,8 @@ const AdminClubApprovalPage = () => {
 				}
 			});
 			setClubs(response.data);
+			setSelectedClubs([]);
+			setRejectionReasons({});
 		} catch (error) {
 			console.error('Error fetching pending clubs', error);
 		}

@@ -6,12 +6,12 @@ import axios from 'axios';
 
 const ClubVideoCards = styled.div`
 	display: flex;
-	gap: 0 46px;
+	gap: 0 40px;
 	flex-flow: row wrap;
 
 	.video-card {
 		margin-top: 20px;
-		max-width: 350px;
+		max-width: 340px;
 	}
 
 `
@@ -47,7 +47,7 @@ const ClubVideosPage = () => {
 			</div>
 			<ClubVideoCards>
 				{clubVideoList.map(video => (
-					<Card key={video.id} className="video-card">
+					<Card key={video.id} className="video-card" onClick={() => navigate(`/club/videos/${video.id}`)}>
 						<CardMedia
 							component="iframe"
 							src={video.videoUrl}
